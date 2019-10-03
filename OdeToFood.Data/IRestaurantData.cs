@@ -8,7 +8,7 @@ namespace OdeToFood.Data
 {
     public interface IRestaurantData
     {
-        //IEnumerable<OdeToFood.Core.Restaurant> GetRestaurantsByName(string name);
+        IEnumerable<OdeToFood.Core.Restaurant> GetRestaurantsByName(string name);
         Restaurant GetById(int id);
     }
 
@@ -51,19 +51,27 @@ namespace OdeToFood.Data
             return returnRestaurant;
         }
 
+        
+        public Restaurant GetById(int id)
+        {
+            return restaurants.SingleOrDefault(r => r.ID == id);
+        }
         /// <summary>
         /// Try to find a match to the restaurant names
         /// </summary>
         /// <param name="searchInput">This is the term to search the list of restraurants</param>
         /// <returns></returns>
-        public Restaurant GetById(int id)
+        public IEnumerable<Restaurant> GetRestaurantsByName(string searchTerm)
         {
-            return restaurants.SingleOrDefault(r => r.ID == id);
-        }
-
-        public IEnumerable<Restaurant> GetRestaurantsByName(string name)
-        {
-            throw new NotImplementedException();
+            var returnRestaurants = new List<Restaurant>();
+            foreach (var item in this.restaurants)
+            {
+                if ((item.Name ?? "").ToLower().StartsWith((searchTerm ?? "").ToLower()))
+                {
+                    returnRestaurants.Add(item);
+                }
+            }
+            return returnRestaurants;
         }
     }
 }
